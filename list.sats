@@ -7,6 +7,10 @@ datatype list (a:t@ype) =
 
 fun list_empty   {a:t@ype} (list a): bool
 
+fun {a:t@ype} list_find    (list a, a, (a, a) -> bool): maybe int 
+//fun list_find_int (list int, int): maybe int 
+//fun list_find_string (list string, string): maybe int 
+
 fun {a:t@ype} list_get 	   (list a, int): maybe a
 fun {a:t@ype} list_len     (list a): int
 fun {a:t@ype} list_append  (list a, a): list a

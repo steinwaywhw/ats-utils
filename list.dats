@@ -7,6 +7,14 @@ staload "./maybe.sats"
 
 #define :: Cons
 
+implement {a} list_find (xs, obj, cmp) = 
+	case+ xs of 
+	| Nil _ => Nothing ()
+	| x :: xs => 
+		if cmp (x, obj)
+		then Just 0
+		else bind (list_find (xs, obj), lam x => x + 1)
+
 implement {a} list_get (xs, index) = 
 	if (index < 0) 
 	then Nothing ()
