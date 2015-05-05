@@ -13,7 +13,7 @@ implement {a} list_find (xs, obj, cmp) =
 	| x :: xs => 
 		if cmp (x, obj)
 		then Just 0
-		else bind (list_find (xs, obj), lam x => x + 1)
+		else bind (list_find (xs, obj, cmp), lam x => x + 1)
 
 implement {a} list_get (xs, index) = 
 	if (index < 0) 
