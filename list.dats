@@ -88,15 +88,20 @@ implement {a} list_filter (xs, f) =
 		then Cons (x, list_filter (xs, f))
 		else list_filter (xs, f)
 
+implement {a} list_filter_clo (xs, f) =
+	case+ xs of 
+	| Nil () => Nil ()
+	| Cons (x, xs) => 
+		if f x
+		then Cons (x, list_filter_clo (xs, f))
+		else list_filter_clo (xs, f)
+
 implement {a} list_foreach (xs, f) =
 	case+ xs of 
 	| Nil () => ()
 	| Cons (x, xs) => list_foreach (xs, f) where { val _ = f x }
 
-implement {a} list_foreach_clo (xs, f) =
-	case+ xs of 
-	| Nil () => ()
-	| Cons (x, xs) => list_foreach_clo (xs, f) where { val _ = f x }
+
 
 implement {a,b} {r} list_zip (xs, ys, f) = 
 	case+ list_head xs of
