@@ -22,6 +22,7 @@ fun {a:t@ype} list_take    (list a, int): list a
 fun {a:t@ype} list_concat  (list a, list a): list a
 fun {a:t@ype} list_filter  (list a, a -> bool): list a
 fun {a:t@ype} list_foreach (list a, a -> void): void 
+fun {a:t@ype} list_foreach_clo (list a, a -<cloref1> void): void
 fun {a:t@ype} list_reverse (list a): list a
 
 fun {a:t@ype} {b:t@ype}    list_foldl (list a, b, (a, b) -> b): b
@@ -41,6 +42,7 @@ overload drop 	 with list_drop
 overload concat  with list_concat
 overload filter  with list_filter
 overload foreach with list_foreach
+overload foreach with list_foreach_clo
 overload map 	 with list_map 
 overload foldl 	 with list_foldl
 overload foldr 	 with list_foldr

@@ -93,6 +93,11 @@ implement {a} list_foreach (xs, f) =
 	| Nil () => ()
 	| Cons (x, xs) => list_foreach (xs, f) where { val _ = f x }
 
+implement {a} list_foreach_clo (xs, f) =
+	case+ xs of 
+	| Nil () => ()
+	| Cons (x, xs) => list_foreach_clo (xs, f) where { val _ = f x }
+
 implement {a,b} {r} list_zip (xs, ys, f) = 
 	case+ list_head xs of
 	| Nothing () => Nil ()
