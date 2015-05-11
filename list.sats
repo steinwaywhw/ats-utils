@@ -8,6 +8,7 @@ datatype list (a:t@ype) =
 fun list_empty   {a:t@ype} (list a): bool
 
 fun {a:t@ype} list_find    (list a, a, (a, a) -> bool): maybe int 
+fun {a:t@ype} list_eq 	   (list a, list a, (a, a) -> bool): bool
 //fun list_find_int (list int, int): maybe int 
 //fun list_find_string (list string, string): maybe int 
 
@@ -33,7 +34,10 @@ fun {a:t@ype} {b:t@ype}    list_foldr (list a, b, (a, b) -> b): b
 fun {a:t@ype} {b:t@ype}    list_map   (list a, a -> b): list b 
 fun {a,b:t@ype} {r:t@ype}  list_zip   (list a, list b, (a, b) -> r): list r
 
+fun {a:t@ype} list_is_prefix (list a, pre: list a, (a, a) -> bool): bool 
+
 overload [] 	 with list_get 
+overload eq 	 with list_eq 
 overload len 	 with list_len
 overload empty 	 with list_empty 
 overload append  with list_append

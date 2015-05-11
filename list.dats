@@ -7,6 +7,18 @@ staload "./maybe.sats"
 
 #define :: Cons
 
+implement {a} list_eq (xs, ys, f) = 
+	case+ (xs, ys) of 
+	| (x::xs, y::ys) => if f(x, y) then true else false 
+	| (Nil(), Nil()) => true 
+	| (_, _) => false
+
+implement {a} list_is_prefix (xs, pre, f) = 
+	case+ (xs, pre) of 
+	| (x::xs, p::pre) => if f(x,p) then list_is_prefix (xs, pre, f) else false
+	| (_, Nil ()) => true 
+	| (_, _) => false
+
 implement {a} list_find (xs, obj, cmp) = 
 	case+ xs of 
 	| Nil _ => Nothing ()
