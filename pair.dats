@@ -3,7 +3,7 @@ staload "./pair.sats"
 #define ATS_DYNLOADFLAG 0
 
 
-implement {a,b} pair_print (p, fa, fb) = () where {
+implement {a,b} pair_show (p, fa, fb) = () where {
 	val _ = show "Pair ("
 	val _ = fa (fst p)
 	val _ = show ", "
