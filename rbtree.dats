@@ -14,32 +14,56 @@ staload _ = "./list.dats"
 
 (* color definition *)
 sortdef color = {i:nat | i <= 2} 
-stadef darken (c:color): color = c+1
-stadef lighten (c:color): color = c-1
+stadef darken (c:int): int = c + 1
+stadef lighten (c:int): int = c - 1
 
-stadef incr (h:nat, c:color): nat = h + c 
-//	scase (h, c) of 
-//	| (h, R)    => h
-//	| (h, B)    => h+1
-//	| (h, BB)   => h+2
 
-stadef blacken (h:nat, c:color): nat = h + (B - c)
+//datasort color = R | B | BB 
+//stadef darken (c:color): color =
+//	scase c of 
+//	| R => B 
+//	| B => BB
+//	| BB => BB
+//stadef lighten (c:color): color = 
+//	scase c of 
+//	| R => R 
+//	| B => R
+//	| BB => B 
+
+
+stadef incr (h:int, c:int): int =  h + c 
+//	scase c of 
+//	| R => h
+//	| B => h+1
+//	| BB => h+2
+
+stadef blacken (h:int, c:int): int = h + (B - c)
 //	scase c of 
 //	| R => h+1
 //	| B => h 
 //	| BB => h-1
+stadef redden (h:int, c:int): int = h - (c - R)
+
+//stadef eq_color_color (a:color, b:color): bool = 
+//	scase (a, b) of 
+//	| (R, R) => true 
+//	| (B, B) => true 
+//	| (BB, BB) => true
+//	| (_, _) => false
+
+//stadef == = eq_color_color
 
 (* static constraint *)
-stadef valid (c:color, cl:color, cr:color): bool = ((c==R) * (cl==B) * (cr==B)) + (c==B)
-stadef violation_rr (c:color, cl:color, cr:color): bool = (c==R) * (((cl==R) * (cr==B)) + ((cl==B) * (cr==R)))
-stadef violation_bb (c:color, cl:color, cr:color): bool = (c==BB) * ((cl==R) + (cr==R))
+stadef valid (c:int, cl:int, cr:int): bool = ((c==R) * (cl==B) * (cr==B)) + (c==B)
+stadef violation_rr (c:int, cl:int, cr:int): bool = (c==R) * (((cl==R) * (cr==B)) + ((cl==B) * (cr==R)))
+stadef violation_bb (c:int, cl:int, cr:int): bool = (c==BB) * ((cl==R) + (cr==R))
 
 (* datatype *)
-datatype _rbtree (a:t@ype, c:color, h:nat) =
+datatype _rbtree (a:t@ype, c:int, h:int) =
 	| Empty (a, B, 0) of ()
 	| {c,cl,cr:color | valid (c,cl,cr)} {h:nat} Node (a, c, incr (h, c)) of (int c, _rbtree (a, h, cl), a, _rbtree (a, h, cr))
 
-datatype __rbtree (a:t@ype, c:color, h:nat) = 
+datatype __rbtree (a:t@ype, c:int, h:int) = 
 	| BEmpty (a, B, 0)
 	| BBEmpty (a, BB, 1)
 	| {c,cl,cr:color|valid (c,cl,cr)} {h:nat} RBNode (a, c, incr (h, c)) of (int c, _rbtree (a, cl, h), a, _rbtree (a, cr, h))
@@ -50,40 +74,74 @@ assume rbtree (a:t@ype) = [h:nat] _rbtree (a, B, h)
 
 
 (* utility *)
-symintr darken
-symintr lighten
+//symintr darken
+//symintr lighten
 
-fun darken_c {c:color|c < BB} (color: int c): int (c+1) = color+1
-fun lighten_c {c:color|c > R} (color: int c): int (c-1) = color-1
+fun darken {c:color|c < BB} (color: int c): int (c+1) = color+1
+fun lighten {c:color|c > R} (color: int c): int (c-1) = color-1
 
-overload darken with darken_c
-overload lighten with lighten_c
+//overload darken with darken_c
+//overload lighten with lighten_c
 
-fun {a:t@ype} darken_rb {c:color|c < BB} {h:nat} (tree: __rbtree (a, c, h)): __rbtree (a, darken c, h) = 
-	case+ tree of 
-	| RBNode (color, a, x, b) when color = R => RBNode (darken color, a, x, b)
-	| RBNode (color, a, x, b) when color = B => BBNode (darken color, a, x, b)
-	| RRNode (color, a, x, b) => RBNode (darken color, a, x, b)
-	| BEmpty () => BBEmpty ()
-	| _ =>> assertloc false
+//fun {a:t@ype} darken_rb {c:color|c < B} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, darken c, h) = 
+//	case+ tree of 
+//	| RBNode (color, a, x, b) when color = R => RBNode (darken color, a, x, b)
+//	| RRNode (color, a, x, b) => RBNode (darken color, a, x, b)
+//	| BEmpty () => BBEmpty ()
+//	| RBNode (color, a, x, b) when color = B => BBNode (darken color, a, x, b)
+//	| _ =>> assertloc false
 
-fun {a:t@ype} lighten_rb {c:color|c > R} {h:nat} (tree: __rbtree (a, c, h)): __rbtree (a, lighten c, h) = 
-	case+ tree of 
-	| RBNode (color, a, x, b) => RBNode (lighten color, a, x, b)
-	| BBNode (color, a, x, b) => RBNode (lighten color, a, x, b)
-	| BBEmpty () => BEmpty ()
-	| _ =>> assertloc (false)
+//fun {a:t@ype} lighten_rb {c:color|c > R} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, lighten c, h) = 
+//	case+ tree of 
+//	| RBNode (color, a, x, b) => RBNode (lighten color, a, x, b)
+//	| BBNode (color, a, x, b) => RBNode (lighten color, a, x, b)
+//	| BBEmpty () => BEmpty ()
+//	| _ =>> assertloc (false)
 
-overload darken with darken_rb 
-overload lighten with lighten_rb
+//overload darken with darken_rb 
+//overload lighten with lighten_rb
 
-fun {a:t@ype} blacken {c:color} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, B, blacken (h, c)) = 
+symintr blacken 
+symintr redden
+
+fun {a:t@ype} __blacken {c:color} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, B, blacken (h, c)) = 
 	case+ tree of 
 	| BEmpty _ => Empty ()
 	| BBEmpty _ => Empty () 
 	| RBNode (_, a, x, b) => Node (B, a, x, b)
 	| BBNode (_, a, x, b) => Node (B, a, x, b)
 	| RRNode (_, a, x, b) => Node (B, a, x, b)
+
+fun {a:t@ype} _blacken {c:color} {h:nat} (tree: _rbtree (a, c, h)): _rbtree (a, B, blacken (h, c)) = 
+	case+ tree of 
+	| Empty _ => Empty ()
+	| Node (_, a, x, b) => Node (B, a, x, b)
+
+//{((h>0)*(c != BB))+((h==0)*(c==R))} 
+fun {a:t@ype} __redden {c:color} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, R, redden (h, c)) = 
+	case- tree of 
+	| RBNode (_, a, x, b) => Node (R, a, x, b)
+	| BBNode (_, a, x, b) => Node (R, a, x, b)
+	| RRNode (_, a, x, b) => Node (R, a, x, b) 
+
+// {(h>0)+((h==0)*(c==R))}
+fun {a:t@ype} _redden {c:color} {h:nat} (tree: _rbtree (a, c, h)): _rbtree (a, R, redden (h, c)) = 
+	case- tree of 
+	| Node (_, a, x, b) => Node (R, a, x, b)
+
+overload blacken with _blacken 
+overload blacken with __blacken
+overload redden with _redden
+overload redden with __redden 
+
+fun {a:t@ype} normalize {c:color} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, c, h) = 
+	case- tree of 
+	| BEmpty _ => Empty ()
+	| RBNode (_, a, x, b) => Node (B, a, x, b)
+//	| BBEmpty _ => Empty () 
+//	| BBNode (_, a, x, b) => Node (B, a, x, b)
+//	| RRNode (_, a, x, b) => Node (B, a, x, b)
+
 
 
 
@@ -146,23 +204,24 @@ fun {a:t@ype} blacken {c:color} {h:nat} (tree: __rbtree (a, c, h)): _rbtree (a, 
 fun {a:t@ype} balance_right {c,cl,cr:color} {h:nat} (color: int c, left: _rbtree (a, cl, h), element: a, right: __rbtree (a, cr, h)): [cc:color] __rbtree (a, cc, h) = 
 	case+ (left, right) of 
 	(* valid RB node *)
-	| (_, RBNode _) => RBNode (color, left, element, right)
+	| (_, RBNode _) => RBNode (color, left, element, normalize right)
+	| (_, BEmpty _) => RBNode (color, left, element, normalize right)
 	(* RR (or RR with BB) with recoloring *)
-	| (Node (R, _, _, _), RRNode (R, Node (R, _, _, _), _, _)) => RBNode (lighten color, darken left, element, darken right)
-	| (Node (R, _, _, _), RRNode (R, _, _, Node (R, _, _, _))) => RBNode (lighten color, darken left, element, darken right)
+	| (Node (R, _, _, _), RRNode (R, Node (R, _, _, _), _, _)) => RBNode (lighten color, blacken left, element, blacken right)
+	| (Node (R, _, _, _), RRNode (R, _, _, Node (R, _, _, _))) => RBNode (lighten color, blacken left, element, blacken right)
 	(* RR (or RR with BB) with rebalancing *)
 	| (_, RRNode (R, Node (R, a, x, b), y, c)) => RBNode (B, Node (lighten color, left, element, a), x, Node (lighten color, b, y, c))
 	| (_, RRNode (R, a, x, Node (R, b, y, c))) => RBNode (B, Node (lighten color, left, element, a), x, Node (lighten color, b, y, c))
 	(* BB with black sibling and at least one red nephew *)
-	| (Node (B, b, y, Node (R, c, z, d)), BBNode _)  => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, lighten right))
-	| (Node (B, Node (R, b, y, c), z, d), BBNode _)  => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, lighten right))
-	| (Node (B, b, y, Node (R, c, z, d)), BBEmpty _) => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, lighten right))
-	| (Node (B, Node (R, b, y, c), z, d), BBEmpty _) => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, lighten right))
+	| (Node (B, b, y, Node (R, c, z, d)), BBNode _)  => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, redden right))
+	| (Node (B, Node (R, b, y, c), z, d), BBNode _)  => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, redden right))
+	| (Node (B, b, y, Node (R, c, z, d)), BBEmpty _) => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, redden right))
+	| (Node (B, Node (R, b, y, c), z, d), BBEmpty _) => RBNode (color, Node (B, b, y, c), z, Node (B, d, element, redden right))
 	(* BB with black sibling and no red nephew *)
-	| (Node (B, _, _, _), BBNode _)  when color = B => BBNode (darken color, lighten left, element, lighten right)
-	| (Node (B, _, _, _), BBNode _)  when color = R => RBNode (darken color, lighten left, element, lighten right)
-	| (Node (B, _, _, _), BBEmpty _) when color = B => BBNode (darken color, lighten left, element, lighten right)
-	| (Node (B, _, _, _), BBEmpty _) when color = R => RBNode (darken color, lighten left, element, lighten right)
+	| (Node (B, _, _, _), BBNode _)  when color = B => BBNode (darken color, redden left, element, redden right)
+	| (Node (B, _, _, _), BBNode _)  when color = R => RBNode (darken color, redden left, element, redden right)
+	| (Node (B, _, _, _), BBEmpty _) when color = B => BBNode (darken color, redden left, element, redden right)
+	| (Node (B, _, _, _), BBEmpty _) when color = R => RBNode (darken color, redden left, element, redden right)
 	(* BB with red sibling and two black nephew *)
 	| (Node (R, b, y, c), BBNode _)  => balance_right(B, b, y, balance_right(R, c, element, right))
 	| (Node (R, b, y, c), BBEmpty _) => balance_right(B, b, y, balance_right(R, c, element, right))
@@ -173,23 +232,24 @@ fun {a:t@ype} balance_right {c,cl,cr:color} {h:nat} (color: int c, left: _rbtree
 fun {a:t@ype} balance_left {c,cl,cr:color} {h:nat} (color: int c, left: __rbtree (a, cl, h), element: a, right: _rbtree (a, cr, h)): [cc:color] __rbtree (a, cc, h) = 
 	case+ (left, right) of 
 	(* valid RB node *)
-	| (RBNode _, _) => RBNode (color, left, element, right)
+	| (RBNode _, _) => RBNode (color, normalize left, element, right)
+	| (BEmpty _, _) => RBNode (color, normalize left, element, right)
 	(* RR (or RR with BB) with recoloring *)
-	| (RRNode (R, Node (R, _, _, _), _, _), Node (R, _, _, _)) => RBNode (lighten color, darken left, element, darken right)
-	| (RRNode (R, _, _, Node (R, _, _, _)), Node (R, _, _, _)) => RBNode (lighten color, darken left, element, darken right)
+	| (RRNode (R, Node (R, _, _, _), _, _), Node (R, _, _, _)) => RBNode (lighten color, blacken left, element, blacken right)
+	| (RRNode (R, _, _, Node (R, _, _, _)), Node (R, _, _, _)) => RBNode (lighten color, blacken left, element, blacken right)
 	(* RR (or RR with BB) with rebalancing *)
 	| (RRNode (R, Node (R, a, x, b), y, c), _) => RBNode (B, Node (lighten color, a, x, b), y, Node (lighten color, c, element, right))
 	| (RRNode (R, a, x, Node (R, b, y, c)), _) => RBNode (B, Node (lighten color, a, x, b), y, Node (lighten color, c, element, right))
 	(* BB with black sibling and at least one red nephew *)
-	| (BBNode _, Node (B, Node (R, b, y, c), z, d))  => RBNode (color, Node (B, lighten left, element, b), y, Node (B, c, z, d))
-	| (BBNode _, Node (B, b, y, Node (R, c, z, d)))  => RBNode (color, Node (B, lighten left, element, b), y, Node (B, c, z, d))
-	| (BBEmpty _, Node (B, Node (R, b, y, c), z, d)) => RBNode (color, Node (B, lighten left, element, b), y, Node (B, c, z, d))
-	| (BBEmpty _, Node (B, b, y, Node (R, c, z, d))) => RBNode (color, Node (B, lighten left, element, b), y, Node (B, c, z, d))
+	| (BBNode _, Node (B, Node (R, b, y, c), z, d))  => RBNode (color, Node (B, redden left, element, b), y, Node (B, c, z, d))
+	| (BBNode _, Node (B, b, y, Node (R, c, z, d)))  => RBNode (color, Node (B, redden left, element, b), y, Node (B, c, z, d))
+	| (BBEmpty _, Node (B, Node (R, b, y, c), z, d)) => RBNode (color, Node (B, redden left, element, b), y, Node (B, c, z, d))
+	| (BBEmpty _, Node (B, b, y, Node (R, c, z, d))) => RBNode (color, Node (B, redden left, element, b), y, Node (B, c, z, d))
 	(* BB with black sibling and no red nephew *)
-	| (BBNode _, Node (B, _, _, _))  when color = B => BBNode (darken color, lighten left, element, lighten right)
-	| (BBNode _, Node (B, _, _, _))  when color = R => RBNode (darken color, lighten left, element, lighten right)
-	| (BBEmpty _, Node (B, _, _, _)) when color = B => BBNode (darken color, lighten left, element, lighten right)
-	| (BBEmpty _, Node (B, _, _, _)) when color = R => RBNode (darken color, lighten left, element, lighten right)
+	| (BBNode _, Node (B, _, _, _))  when color = B => BBNode (darken color, redden left, element, redden right)
+	| (BBNode _, Node (B, _, _, _))  when color = R => RBNode (darken color, redden left, element, redden right)
+	| (BBEmpty _, Node (B, _, _, _)) when color = B => BBNode (darken color, redden left, element, redden right)
+	| (BBEmpty _, Node (B, _, _, _)) when color = R => RBNode (darken color, redden left, element, redden right)
 	(* BB with red sibling and two black nephew *)
 	| (BBNode _, Node (R, b, y, c))  => balance_left (B, balance_left (R, left, element, b), y, c)
 	| (BBEmpty _, Node (R, b, y, c)) => balance_left (B, balance_left (R, left, element, b), y, c)
@@ -327,7 +387,7 @@ in (* local-in-end *)
 
 
 
-implement {a} empty () = Empty ()
+//implement {a} empty () = Empty ()
 
 implement {a} member (tree, element, cmp) = 
 	case+ tree of 
