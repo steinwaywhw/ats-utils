@@ -84,7 +84,7 @@ end (* local-in-end *)
 
 
 implement {key} {value} avltree_lookup (tree, k, cmp) = let 
-	fun lookup (tree: avltree_t (key, value)):<cloref1> maybe value = 
+	fun lookup (tree: avltree (key, value)):<cloref1> maybe value = 
 		case+ tree of 
 		| AVLNil () => Nothing ()
 		| AVLNode (current, v, left, right) => 
