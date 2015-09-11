@@ -7,17 +7,17 @@ staload "./util.sats"
 staload _ = "./maybe.dats"
 
 (* internal datatype *)
+
 datatype avltree_t (key:t@ype, value:t@ype+, int) = 
 	| AVLNil (key, value, 0) of ()
 	| {hl,hr:nat | ~1 <= hl-hr; hl-hr <= 1} AVLNode (key, value, 1 + max (hl, hr)) of (key, value, avltree_t (key, value, hl), avltree_t (key, value, hr))
 typedef avltree_t (key:t@ype, value:t@ype) = [n:nat] avltree_t (key, value, n)
 
+
 (* interface *)
+
 assume avltree (key, value) = avltree_t (key, value)
 
-
-
-local (* local-in-end *)
 
 (* internal functions/exceptions, not intended for outside use *)
 
@@ -47,7 +47,10 @@ fun {key:t@ype} {value:t@ype} rotate_left {hl,hr:nat|hr-hl==2} (k: key, v: value
 		else let val+ AVLNode (rlk, rlv, rll, rlr) = rl in AVLNode (rlk, rlv, AVLNode (k, v, left, rll), AVLNode (rk, rv, rlr, rr)) end
 	end
 
-in (* local-in-end *)
+
+(* implementations *)
+
+implement avltree_height {key} {value} (tree) = height tree
 
 implement {key} {value} avltree_insert (tree, k, v, cmp) = let 
 
@@ -77,12 +80,6 @@ in
 	insert tree
 end 
 
-implement avltree_height {key} {value} (tree) = height tree
-
-end (* local-in-end *)
-
-
-
 implement {key} {value} avltree_lookup (tree, k, cmp) = let 
 	fun lookup (tree: avltree (key, value)):<cloref1> maybe value = 
 		case+ tree of 
@@ -94,7 +91,6 @@ implement {key} {value} avltree_lookup (tree, k, cmp) = let
 in 
 	lookup tree
 end 
-
 
 implement avltree_empty {key} {value} (tree) = 
 	case+ tree of 
@@ -130,23 +126,21 @@ implement {key} {value} avltree_show (tree, show_key, show_value) =
 		in 
 		end 
 
-local 
 
-fun test (): void = () where {
+(* test *)
+
+fun avltree_test (): void = () where {
 	val cmp = lam (x:int, y:int):int => x - y
 
-	val t = AVLNil{int,string} () 
-	val t = avltree_insert<int><string> (t, 10, "hello", cmp)
-	val t = avltree_insert<int><string> (t, 11, "world", cmp)
-	val t = avltree_insert<int><string> (t, 12, "aaaa", cmp)
-	val _ = avltree_show<int><string> (t, lam x => print_int x, lam x => print_string x) 
-	val t = avltree_insert<int><string> (t, 10, "aaaaaa", cmp)
+	val t = AVLNil () 
+	val t = avltree_insert (t, 10, "hello", cmp)
+	val t = avltree_insert (t, 11, "world", cmp)
+	val t = avltree_insert (t, 12, "aaaa", cmp)
+	val _ = avltree_show (t, lam x => print_int x, lam x => print_string x) 
+	val t = avltree_insert (t, 10, "aaaaaa", cmp)
 }
 
-in 
+implement main0 () = avltree_test ()
 
-implement main0 () = test ()
-
-end 
 
 
