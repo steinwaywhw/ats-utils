@@ -1,14 +1,12 @@
-staload "util/maybe.sats"
+staload "./maybe.sats"
 #define ATS_DYNLOADFLAG 0
 
-abstype map (k:t@ype, v:t@ype)
-typedef map (k:t@ype) = [v:t@ype] map (k, v)
-typedef map = [k,v:t@ype] map (k, v)
+abstype map (k:t@ype, v:t@ype) = ptr
 
-fun insert {k:t@ype} {v:t@ype} (map (k, v), k, v): map (k, v)
-fun member {k:t@ype} 		   (map (k), k): bool
-fun lookup {k:t@ype} {v:t@ype} (map (k, v), k): maybe (v)
-fun update {k:t@ype} {v:t@ype} (map (k, v), k, v): map (k, v)
-fun delete {k:t@ype} 		   (map (k), k): map (k)
-fun empty (map): bool
-fun size (map): int
+fun {k:t@ype} {v:t@ype} map_insert (map (k, v), k, v, (k, k) -> int) : map (k, v)
+fun {k:t@ype} {v:t@ype} map_member (map (k, v), k, (k, k) -> int)    : bool
+fun {k:t@ype} {v:t@ype} map_lookup (map (k, v), k, (k, k) -> int)    : maybe (v)
+fun {k:t@ype} {v:t@ype} map_update (map (k, v), k, v, (k, k) -> int) : map (k, v)
+fun {k:t@ype} {v:t@ype} map_delete (map (k, v), k, (k, k) -> int)    : map (k, v)
+fun map_empty {k:t@ype} {v:t@ype} (map (k, v)): bool
+fun map_size  {k:t@ype} {v:t@ype} (map (k, v)): size_t

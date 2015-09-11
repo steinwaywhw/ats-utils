@@ -1,10 +1,13 @@
-#include "share/atspre_staload.hats"
+#include "share/atspre_staload.hats" (* for int/nat/max *)
+#define ATS_DYNLOADFLAG 0
 
 staload "./avl.sats"
 staload "./maybe.sats"
 staload "./util.sats"
 
 staload _ = "./maybe.dats"
+
+
 
 (* internal datatype *)
 
@@ -89,9 +92,9 @@ implement {key} {value} avltree_replace (tree, k, v, cmp) =
 		else AVLNode (current, v, left, right)
 
 implement {key} {value} avltree_insert_or_replace (tree, k, v, cmp) = 
-	case+ avltree_lookup (tree, k, cmp) of 
-	| Just _    => avltree_replace (tree, k, v, cmp)
-	| Nothing _ => avltree_insert (tree, k, v, cmp)
+	if avltree_member (tree, k, cmp) 
+	then avltree_replace (tree, k, v, cmp)
+	else avltree_insert (tree, k, v, cmp)
 
 implement {key} {value} avltree_delete (tree, k, cmp) = let 
 
@@ -141,6 +144,14 @@ implement {key} {value} avltree_delete (tree, k, cmp) = let
 in 
 	delete (tree, k)
 end 
+
+implement {key} {value} avltree_member (tree, k, cmp) = 
+	case+ tree of 
+	| AVLNil () => false 
+	| AVLNode (current, _, left, right) => 
+		if cmp (current, k) = 0 then true 
+		else if cmp (current, k) > 0 then avltree_member (left, k, cmp)
+		else avltree_member (right, k, cmp)
 
 
 
@@ -242,8 +253,6 @@ fun avltree_test (): void = () where {
 
 	val t = avltree_delete (t, 1, cmp)
 	val _ = avltree_show (t, lam x => print_int x, lam x => print_int x)
-
-	val 
 }
 
 implement main0 () = avltree_test ()
