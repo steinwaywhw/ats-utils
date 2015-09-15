@@ -1,6 +1,6 @@
 staload "./maybe.sats"
 #define ATS_DYNLOADFLAG 0
-
+	
 abstype map (k:t@ype, v:t@ype) = ptr
 
 fun {k:t@ype} {v:t@ype} map_insert (map (k, v), k, v, (k, k) -> int) : map (k, v)
