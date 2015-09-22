@@ -24,6 +24,9 @@ fun {a:t@ype} list_concat  (list a, list a): list a
 fun {a:t@ype} list_filter  (list a, a -> bool): list a
 fun {a:t@ype} list_filter_clo  (list a, a -<cloref1> bool): list a
 
+fun {a:t@ype} list_any (list a, a -<cloref1> bool): bool 
+fun {a:t@ype} list_all (list a, a -<cloref1> bool): bool
+
 fun {a:t@ype} list_foreach (list a, a -> void): void 
 fun {a:t@ype} list_foreach_clo (list a, a -<cloref1> void): void 
 

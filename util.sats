@@ -5,8 +5,8 @@ symintr lt
 symintr lte
 symintr compare
 symintr empty
-symintr min 
-symintr max
+//symintr min 
+//symintr max
 
 symintr append
 symintr prepend

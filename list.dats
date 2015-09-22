@@ -132,6 +132,16 @@ implement {a} list_reverse (xs) =
 	| x :: xs => list_append (list_reverse (xs), x)
 	| Nil ()  => Nil ()
 
+implement {a} list_any (xs, f) =
+	case+ xs of 
+	| Nil () => false 
+	| x :: xs => f (x) || list_any (xs, f)
+
+implement {a} list_all (xs, f) = 
+	case+ xs of 
+	| Nil () => false
+	| x :: xs => f (x) && list_all (xs, f)
+
 implement {a} list_show (xs, f) = 
 	case+ xs of 
 	| Nil _      => show "nil"
@@ -147,7 +157,6 @@ implement list_show_string (xs) = list_show<string> (xs, lam x => show x)
 
 
 	
-
 
 ////
 
