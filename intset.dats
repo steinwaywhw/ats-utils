@@ -7,7 +7,7 @@ staload "./intset.sats"
 
 datatype _set (set) = 
 | Empty (empty_set ()) of ()
-| {s:set} {n:int} Elem (set_add (s, n)) of (int n, set s)
+| {s:set} {n:int | ~mem(n, s)} Elem (set_add (s, n)) of (int n, set s)
 
 assume set (s:set) = _set s
 //assume set (s:set) = SET.set (int)
@@ -20,11 +20,11 @@ implement set_add {s} {n} (s, n) =
 	if set_member (n, s)
 	then s 
 	else n :: s
-
+	
 implement set_del {s} {n} (s, n) =
 	case+ s of 
 	| Empty () => s 
-	| x :: s => if x = n then s else x :: set_del (s, n)
+	| x :: s => if n = x then s else x :: set_del (s, n)
 
 implement set_union {s,r} (s, r) =
 	case+ s of 
