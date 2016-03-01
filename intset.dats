@@ -20,7 +20,7 @@ implement set_add {s} {n} (s, n) =
 	if set_member (n, s)
 	then s 
 	else n :: s
-	
+
 implement set_del {s} {n} (s, n) =
 	case+ s of 
 	| Empty () => s 
@@ -65,14 +65,55 @@ implement set_is_empty {s} (s) =
 	| Empty () => true 
 	| Elem _ => false
 
+implement set_range {x,y} (x, y) = let 
+//	val _ = $solver_assert (set_range_base)
+//	val _ = $solver_assert (set_range_ind)
+//	val _ = $solver_assert (set_range_lemma1)
+//	val _ = $solver_assert (set_range_lemma2)
+in 
+	if x = y 
+	then 
+		let 
+			prval pf = set_range_base {x} ()
+		in 
+			x :: Empty ()
+		end
+	else if x > y
+	then 
+		let 
+			prval pf = set_range_ind {x,y} ()
+			prval pf = set_range_lemma2 {x-1,y,x} ()
+		in 
+			x :: set_range (x-1, y)
+		end
+	else 
+		let 
+			prval pf = set_range_lemma1 {x,y} ()
+		in 
+			set_range (y, x)
+		end
+
+end
+
+
+
 
 local 
 
 fun test (): void = () where {
+	val _ = $solver_assert (set_range_base)
+	val _ = $solver_assert (set_range_ind)
+	val _ = $solver_assert (set_range_lemma1)
+	val _ = $solver_assert (set_range_lemma2)
+
+
+
 	val s = empty_set ()
 	val _ = assertloc (set_is_empty s)
 	val _ = assertloc (s = empty_set ())
 
+	val _ = assertloc (set_range (1, 3) = 3 :: set_range (2, 1))
+//	val _ = assertloc (set_range (3) = set_union(set_range (2), 3 :: Empty()))
 }
 
 in 

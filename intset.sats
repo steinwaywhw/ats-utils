@@ -12,6 +12,7 @@ stacst set_complement: (set) -> set
 stacst set_member: (int, set) -> bool
 stacst set_subset: (set, set) -> bool
 stacst set_eq: (set, set) -> bool
+stacst set_range: (int, int) -> set 
 //stacst set_size: (set) -> int
 
 stadef add = set_add 
@@ -22,13 +23,27 @@ stadef dif = set_difference
 stadef com = set_complement
 stadef mem = set_member
 stadef sub = set_subset
+stadef range = set_range
 //stadef size = set_size
 
 stadef == = set_eq
+stadef :: = set_add 
+infixl 30 :: 
 
+
+praxi set_range_base {x:int} (): [range(x,x)==add(empty_set(),x)] unit_p
+praxi set_range_ind {x,y:int|x>y} (): [range(x,y)==add(range(x-1,y),x)] unit_p
+praxi set_range_lemma1 {x,y:int} (): [range(x,y)==range(y,x)] unit_p
+praxi set_range_lemma2 {x,y,z:int|x>=y && (y>z || z>x)} (): [~mem(z,range(x,y))] unit_p
+//praxi set_range_ind2 {x,y:int|x<y} (): [range(x,y)==add(range(x+1,y),x)]
+//praxi set_range_lemma {x,y,z:int|}
+
+//praxi set_range_base (): [range(0)==add(empty_set(),0)] unit_p
+//prfun set_range_ind1 {x:nat|x>0} (): [range(x)==add(range(x-1),x)] unit_p
+//prfun set_range_ind2 {x,y:nat|y>x} (): [~mem(y,range(x))] unit_p
+//praxi set_range_ind2 {x,y:int|x > y} (): [range(x,y)==cup(add(empty_set(),x),range(x-1,y))] unit_p
 
 abstype set (set)
-
 
 fun empty_set (): set (empty_set())
 fun set_add {s:set} {n:int} (set s, int n): set (add(s,n))
@@ -41,8 +56,10 @@ fun set_member {n:int} {s:set} (int n, set s): bool (mem(n,s))
 fun set_subset {s,r:set} (set s, set r): bool (sub(s,r))
 fun set_eq {s,r:set} (set s, set r): bool (s==r)
 fun set_is_empty {s:set} (set s): bool (s==empty_set())
+fun set_range {x,y:int} (int x, int y): set (range(x,y))
 
 overload = with set_eq 
+
 
 //extern fun set_add {s:set} {x:int} (set s, int x): set (add (s, x))
 
