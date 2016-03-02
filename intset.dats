@@ -60,6 +60,8 @@ implement set_subset {s,r} (s, r) =
 implement set_eq {s,r} (s, r) = 
 	set_subset (s, r) * set_subset (r, s)
 
+implement set_neq {s,r} (s, r) = ~(s = r)
+
 implement set_is_empty {s} (s) = 
 	case+ s of 
 	| Empty () => true 
@@ -107,12 +109,12 @@ fun test (): void = () where {
 	val _ = $solver_assert (set_range_lemma2)
 
 
-
 	val s = empty_set ()
 	val _ = assertloc (set_is_empty s)
 	val _ = assertloc (s = empty_set ())
 
 	val _ = assertloc (set_range (1, 3) = 3 :: set_range (2, 1))
+	val _ = assertloc (set_range (1, 3) != set_range (1, 2))
 //	val _ = assertloc (set_range (3) = set_union(set_range (2), 3 :: Empty()))
 }
 

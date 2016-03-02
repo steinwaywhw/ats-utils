@@ -12,7 +12,9 @@ stacst set_complement: (set) -> set
 stacst set_member: (int, set) -> bool
 stacst set_subset: (set, set) -> bool
 stacst set_eq: (set, set) -> bool
+stacst set_neq: (set, set) -> bool
 stacst set_range: (int, int) -> set 
+
 //stacst set_size: (set) -> int
 
 stadef add = set_add 
@@ -24,12 +26,13 @@ stadef com = set_complement
 stadef mem = set_member
 stadef sub = set_subset
 stadef range = set_range
-//stadef size = set_size
 
-stadef == = set_eq
-stadef :: = set_add 
+//stadef size = set_size
 infixl 30 :: 
 
+stadef != = set_neq
+stadef == = set_eq
+stadef :: = set_add 
 
 praxi set_range_base {x:int} (): [range(x,x)==add(empty_set(),x)] unit_p
 praxi set_range_ind {x,y:int|x>y} (): [range(x,y)==add(range(x-1,y),x)] unit_p
@@ -55,10 +58,12 @@ fun set_difference {s,r:set} (set s, set r): set (dif(s,r))
 fun set_member {n:int} {s:set} (int n, set s): bool (mem(n,s))
 fun set_subset {s,r:set} (set s, set r): bool (sub(s,r))
 fun set_eq {s,r:set} (set s, set r): bool (s==r)
+fun set_neq {s,r:set} (set s, set r): bool (s != r)
 fun set_is_empty {s:set} (set s): bool (s==empty_set())
 fun set_range {x,y:int} (int x, int y): set (range(x,y))
 
 overload = with set_eq 
+overload != with set_neq
 
 
 //extern fun set_add {s:set} {x:int} (set s, int x): set (add (s, x))
