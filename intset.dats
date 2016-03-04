@@ -97,10 +97,17 @@ in
 
 end
 
-
+//implement set_reduce {s} {a} (s, base, f) = 
+//	case+ s of 
+//	| Empty () => base 
+//	| Elem (n, s) => f (n, set_reduce (s, base, f))
 
 
 local 
+
+staload  "libats/ML/SATS/basis.sats"
+staload  "libats/ML/SATS/list0.sats"
+staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
 fun test (): void = () where {
 	val _ = $solver_assert (set_range_base)
@@ -115,6 +122,10 @@ fun test (): void = () where {
 
 	val _ = assertloc (set_range (1, 3) = 3 :: set_range (2, 1))
 	val _ = assertloc (set_range (1, 3) != set_range (1, 2))
+
+
+//	val list = set_reduce{s}{list(int)} (set_range(0, 9), list0_nil(), lam (x, xs) => list0_cons (x, xs))
+//	val _ = println! list
 //	val _ = assertloc (set_range (3) = set_union(set_range (2), 3 :: Empty()))
 }
 

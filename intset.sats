@@ -28,11 +28,13 @@ stadef sub = set_subset
 stadef range = set_range
 
 //stadef size = set_size
-infixl 30 :: 
+infix 30 != ==
 
 stadef != = set_neq
 stadef == = set_eq
 stadef :: = set_add 
+
+
 
 praxi set_range_base {x:int} (): [range(x,x)==add(empty_set(),x)] unit_p
 praxi set_range_ind {x,y:int|x>y} (): [range(x,y)==add(range(x-1,y),x)] unit_p
@@ -61,9 +63,12 @@ fun set_eq {s,r:set} (set s, set r): bool (s==r)
 fun set_neq {s,r:set} (set s, set r): bool (s != r)
 fun set_is_empty {s:set} (set s): bool (s==empty_set())
 fun set_range {x,y:int} (int x, int y): set (range(x,y))
+//fun set_reduce {s:set} {a:t@ype} (set s, a, (int, a) -<cloref1> a): a
 
 overload = with set_eq 
 overload != with set_neq
+
+
 
 
 //extern fun set_add {s:set} {x:int} (set s, int x): set (add (s, x))
