@@ -1,50 +1,83 @@
-staload "./util.sats"
-staload "./maybe.sats"
+staload "./symintr.sats"
 
-datatype stream (a:t@ype) =
-	| Cons of (a, lazy (stream a))
-	| Nil of ()
-
-fun stream_empty {a:t@ype} (lazy (stream a)): bool
-fun {a,b:t@ype} {r:t@ype} stream_zip (lazy (stream a), lazy (stream b), (a, b) -> r): lazy (stream r)
-fun {a:t@ype} stream_foreach (lazy (stream a), a -> void): void
+datatype _stream (a:t@ype) =
+| StreamCons of (a, stream a)
+| StreamNil of ()
+where stream (a:t@ype) = lazy (_stream a)
 
 
-fun {a:t@ype} stream_head (lazy (stream a)): maybe a
-fun {a:t@ype} stream_take (lazy (stream a), int): lazy (stream a)
-fun {a:t@ype} stream_tail (lazy (stream a)): lazy (stream a)
-fun {a:t@ype} stream_drop (lazy (stream a), int): lazy (stream a)
-fun {a,b:t@ype} {r:t@ype} stream_zip (lazy (stream a), lazy (stream b), (a, b) -<cloref1> r): lazy (stream r)
-fun {a:t@ype} stream_filter (lazy (stream a), a -<cloref1> bool): lazy (stream a)
-fun {a:t@ype} {b:t@ype} stream_map (lazy (stream a), a -<cloref1> b): lazy (stream b)
-fun {a:t@ype} {b:t@ype} stream_foldr (lazy (stream a), b, (a, b) -<cloref1> b): b 
-fun {a:t@ype} {b:t@ype} stream_foldl (lazy (stream a), b, (a, b) -<cloref1> b): b 
+local (* LOCAL *)
 
-fun {a:t@ype} stream_interleave (lazy (stream a), lazy (stream a)): lazy (stream a)
-fun {a:t@ype} stream_merge (lazy (stream a), lazy (stream a), (a, a) -<cloref1> int): lazy (stream a)
-fun {a:t@ype} stream_get (lazy (stream a), int): maybe a
+typedef nat = [n:nat] int n
+
+in (* LOCAL *)
 
 
-fun stream_show_int (lazy (stream int), int): void 
-fun stream_show_char (lazy (stream char), int): void 
-fun {a:t@ype} stream_show (lazy (stream a), int, a -> void): void
+fun {a:t@ype}   stream_empty    (stream a): bool
+fun {a:t@ype}   stream_len      (stream a): nat
 
-overload show with stream_show_int 
-overload show with stream_show_char 
-overload show with stream_show
+fun {a:t@ype}   stream_eq$eq    (a, a): bool 
+fun {a:t@ype}   stream_eq       (stream a, stream a): bool 
 
-overload empty 	 with stream_empty	     
-overload head 	 with stream_head	     
-overload tail 	 with stream_tail	     
-overload take 	 with stream_take	     
-overload drop 	 with stream_drop	     
-overload map  	 with stream_map 	     
-overload filter	 with stream_filter      	
-overload foldl 	 with stream_foldl	     
-overload foldr 	 with stream_foldr	     
-overload zip 	 with stream_zip	     
-overload foreach with stream_foreach	      	
-overload [] 	 with stream_get
+fun {a:t@ype}   stream_get      (stream a, nat): a
+fun {a:t@ype}   stream_head     (stream a): a
+fun {a:t@ype}   stream_tail     (stream a): stream a
+fun {a:t@ype}   stream_take     (stream a, nat): stream a
+fun {a:t@ype}   stream_drop     (stream a, nat): stream a
+
+fun {a:t@ype}   stream_interleave (stream a, stream a): stream a
+fun {a:t@ype}   stream_merge      (stream a, stream a, (a, a) -<cloref1> int): stream a
+
+fun {a,b:t@ype} stream_zip      (stream a, stream b): stream (@(a, b))
+fun {a:t@ype}   stream_foreach  (stream a, a -<cloref1> void): void
+fun {a:t@ype}   stream_iforeach (stream a, (a, nat) -<cloref1> void): void
+fun {a:t@ype}   stream_filter   (stream a, a -<cloref1> bool): stream a
+fun {a,b:t@ype} stream_map      (stream a, a -<cloref1> b): stream b
+fun {a,b:t@ype} stream_foldr    (stream a, b, (a, b) -<cloref1> b): b 
+fun {a,b:t@ype} stream_foldl    (stream a, b, (a, b) -<cloref1> b): b 
+
+fun {a:t@ype}   stream_any      (stream a, a -<cloref1> bool): bool
+fun {a:t@ype}   stream_all      (stream a, a -<cloref1> bool): bool
+
+fun {a:t@ype}   stream_show$elm (a): void
+fun             stream_show$sep (): void
+fun {a:t@ype}   stream_show_len (stream a, nat): void
+fun {a:t@ype}   stream_show (stream a): void 
+
+//local 
+//staload "./list.sats"
+//in
+//fun {a:t@ype}   stream_to_list (stream a): list a 
+//fun {a:t@ype}   stream_from_list (list a): stream a
+//end
+
+fun stream_selftest (): void
+
+end (* LOCAL *)
+
+overload eq       with stream_eq 
+overload =        with stream_eq 
+overload empty 	  with stream_empty	    
+overload len      with stream_len 
+overload head 	  with stream_head	     
+overload tail 	  with stream_tail	     
+overload take 	  with stream_take	     
+overload drop 	  with stream_drop	
+
+overload map  	  with stream_map 	     
+overload filter	  with stream_filter      	
+overload foldl 	  with stream_foldl	     
+overload foldr 	  with stream_foldr	     
+overload zip 	  with stream_zip	     
+overload foreach  with stream_foreach	
+overload iforeach with stream_iforeach  
+
+overload any      with stream_any 
+overload all      with stream_all     	
+
+overload [] 	  with stream_get
+overload show     with stream_show
+overload show     with stream_show_len
 
 
 

@@ -1,72 +1,85 @@
-staload "./util.sats"
+staload "./symintr.sats"
 staload "./maybe.sats"
 
 datatype list (a:t@ype) =
-	| Cons of (a, list a)
-	| Nil  of ()
+| ListCons of (a, list a)
+| ListNil  of ()
 
-fun list_empty   {a:t@ype} (list a): bool
+local (* LOCAL *)
 
-fun {a:t@ype} list_find    (list a, a, (a, a) -> bool): maybe int 
-fun {a:t@ype} list_eq 	   (list a, list a, (a, a) -> bool): bool
-//fun list_find_int (list int, int): maybe int 
-//fun list_find_string (list string, string): maybe int 
+typedef nat = [n:nat] int n
 
-fun {a:t@ype} list_get 	   (list a, int): maybe a
-fun {a:t@ype} list_len     (list a): int
-fun {a:t@ype} list_append  (list a, a): list a
-fun {a:t@ype} list_prepend (list a, a): list a
-fun {a:t@ype} list_head    (list a): maybe a
-fun {a:t@ype} list_tail    (list a): list a
-fun {a:t@ype} list_drop    (list a, int): list a
-fun {a:t@ype} list_take    (list a, int): list a
-fun {a:t@ype} list_concat  (list a, list a): list a
-fun {a:t@ype} list_filter  (list a, a -> bool): list a
-fun {a:t@ype} list_filter_clo  (list a, a -<cloref1> bool): list a
+in (* LOCAL *)
 
-fun {a:t@ype} list_any (list a, a -<cloref1> bool): bool 
-fun {a:t@ype} list_all (list a, a -<cloref1> bool): bool
 
-fun {a:t@ype} list_foreach (list a, a -> void): void 
-fun {a:t@ype} list_foreach_clo (list a, a -<cloref1> void): void 
+fun {a:t@ype}   list_empty    (list a): bool
+fun {a:t@ype}   list_len      (list a): nat
 
-fun {a:t@ype} list_reverse (list a): list a
+fun {a:t@ype}   list_eq$eq    (a, a): bool
+fun {a:t@ype}   list_eq 	  (list a, list a): bool
+    
+fun {a:t@ype}   list_get 	  (list a, nat): a
+fun {a:t@ype}   list_append   (list a, a): list a
+fun {a:t@ype}   list_prepend  (list a, a): list a
+fun {a:t@ype}   list_concat   (list a, list a): list a
+fun {a:t@ype}   list_head     (list a): a
+fun {a:t@ype}   list_tail     (list a): list a
+fun {a:t@ype}   list_drop     (list a, nat): list a
+fun {a:t@ype}   list_take     (list a, nat): list a
+fun {a:t@ype}   list_reverse  (list a): list a
 
-fun {a:t@ype} {b:t@ype}    list_foldl (list a, b, (a, b) -> b): b
-fun {a:t@ype} {b:t@ype}    list_foldr (list a, b, (a, b) -> b): b
-fun {a:t@ype} {b:t@ype}    list_map   (list a, a -> b): list b 
-fun {a,b:t@ype} {r:t@ype}  list_zip   (list a, list b, (a, b) -> r): list r
+fun {a:t@ype}   list_find$eq  (a, a): bool
+fun {a:t@ype}   list_find     (list a, a): maybe nat 
+fun {a:t@ype}   list_any      (list a, a -<cloref1> bool): bool 
+fun {a:t@ype}   list_all      (list a, a -<cloref1> bool): bool
+  
+fun {a:t@ype}   list_filter   (list a, a -<cloref1> bool): list a
+fun {a:t@ype}   list_foreach  (list a, a -<cloref1> void): void 
+fun {a:t@ype}   list_iforeach (list a, (a, nat) -<cloref1> void): void
+fun {a,b:t@ype} list_foldl    (list a, b, (a, b) -<cloref1> b): b
+fun {a,b:t@ype} list_foldr    (list a, b, (a, b) -<cloref1> b): b
+fun {a,b:t@ype} list_map      (list a, a -<cloref1> b): list b 
+fun {a,b:t@ype} list_zip      (list a, list b): list (@(a, b))
 
-fun {a:t@ype} list_is_prefix (list a, pre: list a, (a, a) -> bool): bool 
+end (* LOCAL *)
 
-overload [] 	 with list_get 
-overload eq 	 with list_eq 
-overload len 	 with list_len
-overload empty 	 with list_empty 
-overload append  with list_append
-overload prepend with list_prepend
-overload head 	 with list_head  
-overload tail 	 with list_tail  
-overload take    with list_take
-overload drop 	 with list_drop  
-overload concat  with list_concat
-overload filter  with list_filter
-overload filter  with list_filter_clo
-overload foreach with list_foreach
-overload foreach with list_foreach_clo
+//local 
+//staload "./stream.sats"
+//in
+//fun {a:t@ype} list_from_stream (stream a): list a 
+//fun {a:t@ype} list_to_stream (list a): stream a 
+//end
 
-overload map 	 with list_map 
-overload foldl 	 with list_foldl
-overload foldr 	 with list_foldr
-overload zip 	 with list_zip
+fun           list_show$sep (): void
+fun {a:t@ype} list_show$elm (a): void
+fun {a:t@ype} list_show (list a): void
 
-fun {a:t@ype} list_show (list a, a -> void): void
+fun list_selftest (): void 
 
-fun list_show_int 		(list int): void
-fun list_show_char 		(list char): void 
-fun list_show_string 	(list string): void
+overload [] 	  with list_get 
+overload eq 	  with list_eq 
+overload =        with list_eq
+overload len 	  with list_len
+overload empty 	  with list_empty 
+overload append   with list_append
+overload prepend  with list_prepend
+overload head 	  with list_head  
+overload tail 	  with list_tail  
+overload take     with list_take
+overload drop 	  with list_drop  
+overload concat   with list_concat
+overload reverse  with list_reverse
+ 
+overload foreach  with list_foreach
+overload iforeach with list_iforeach
+overload filter   with list_filter
+overload map 	  with list_map 
+overload foldl 	  with list_foldl
+overload foldr 	  with list_foldr
+overload zip 	  with list_zip
+ 
+overload any      with list_any 
+overload all      with list_all 
+overload find     with list_find 
 
-overload show 	 with list_show_int 
-overload show 	 with list_show_char 
-overload show	 with list_show_string
 overload show 	 with list_show
