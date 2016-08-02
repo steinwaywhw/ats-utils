@@ -12,8 +12,13 @@ staload "./stream.sats"
 staload _ = "./stream.dats"
 
 
+staload "./avl.sats"
+staload _ = "./avl.dats"
+
+
 implement main0 () = () where {
 //	val _ = maybe_selftest ()
 //	val _ = list_selftest ()
-	val _ = stream_selftest ()
+//	val _ = stream_selftest ()
+	val _ = avltree_selftest ()
 }

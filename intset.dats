@@ -55,12 +55,12 @@ implement set_member {n} {s} (n, s) =
 implement set_subset {s,r} (s, r) = 
 	case+ s of 
 	| Empty () => true 
-	| x :: s => set_member (x, r) * set_subset (s, r)
+	| x :: s => if set_member (x, r) then set_subset (s, r) else false
 
 implement set_eq {s,r} (s, r) = 
-	set_subset (s, r) * set_subset (r, s)
+	if set_subset (s, r) then set_subset (r, s) else false
 
-implement set_neq {s,r} (s, r) = ~(s = r)
+implement set_neq {s,r} (s, r) = ~(s \set_eq r)
 
 implement set_is_empty {s} (s) = 
 	case+ s of 
@@ -103,34 +103,38 @@ end
 //	| Elem (n, s) => f (n, set_reduce (s, base, f))
 
 
-local 
+//local 
 
-staload  "libats/ML/SATS/basis.sats"
-staload  "libats/ML/SATS/list0.sats"
-staload _(*anon*) = "libats/ML/DATS/list0.dats"
+//staload  "libats/ML/SATS/basis.sats"
+//staload  "libats/ML/SATS/list0.sats"
+//staload _(*anon*) = "libats/ML/DATS/list0.dats"
 
-fun test (): void = () where {
-	val _ = $solver_assert (set_range_base)
-	val _ = $solver_assert (set_range_ind)
-	val _ = $solver_assert (set_range_lemma1)
-	val _ = $solver_assert (set_range_lemma2)
-
-
-	val s = empty_set ()
-	val _ = assertloc (set_is_empty s)
-	val _ = assertloc (s = empty_set ())
-
-	val _ = assertloc (set_range (1, 3) = 3 :: set_range (2, 1))
-	val _ = assertloc (set_range (1, 3) != set_range (1, 2))
+//fun test (): void = () where {
+//	val _ = $solver_assert (set_range_base)
+//	val _ = $solver_assert (set_range_ind)
+//	val _ = $solver_assert (set_range_lemma1)
+//	val _ = $solver_assert (set_range_lemma2)
 
 
-//	val list = set_reduce{s}{list(int)} (set_range(0, 9), list0_nil(), lam (x, xs) => list0_cons (x, xs))
-//	val _ = println! list
-//	val _ = assertloc (set_range (3) = set_union(set_range (2), 3 :: Empty()))
-}
+//	val s = empty_set ()
+//	val _ = assertloc (set_is_empty s)
+//	val _ = assertloc (s \set_eq empty_set ())
 
-in 
+//	val _ = assertloc (set_range (1, 3) \set_eq 3 :: set_range (2, 1))
+//	val _ = assertloc (set_range (1, 3) \set_neq set_range (1, 2))
 
-implement main0 () = test ()
 
-end
+////	val list = set_reduce{s}{list(int)} (set_range(0, 9), list0_nil(), lam (x, xs) => list0_cons (x, xs))
+////	val _ = println! list
+////	val _ = assertloc (set_range (3) = set_union(set_range (2), 3 :: Empty()))
+//}
+
+//in 
+
+////implement main0 () = test ()
+////
+////end
+
+//end
+
+

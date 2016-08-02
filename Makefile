@@ -1,6 +1,6 @@
 PATSCC=$(PATSHOME)/bin/patscc -DATS_MEMALLOC_LIBC
 PATSOPT=$(PATSHOME)/bin/patsopt 
-PATSOLVE=$(PATSHOME)/bin/patsolve_z3
+PATSOLVE=$(PATSHOME)/bin/patsolve_smt
 RMF=rm -f
 
 all:: intset
@@ -18,4 +18,10 @@ clean:: ; $(RMF) *~
 clean:: ; $(RMF) *_?ats.c
 
 cleanall:: clean
+
+
+tc: mset_tc
+
+mset_tc: mset.dats
+	$(PATSOPT) -tc --constraint-export -d $< | $(PATSOLVE) -i | tee ./test | z3 -smt2 -in
 

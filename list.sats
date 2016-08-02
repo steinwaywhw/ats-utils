@@ -41,18 +41,11 @@ fun {a,b:t@ype} list_foldr    (list a, b, (a, b) -<cloref1> b): b
 fun {a,b:t@ype} list_map      (list a, a -<cloref1> b): list b 
 fun {a,b:t@ype} list_zip      (list a, list b): list (@(a, b))
 
-end (* LOCAL *)
-
-//local 
-//staload "./stream.sats"
-//in
-//fun {a:t@ype} list_from_stream (stream a): list a 
-//fun {a:t@ype} list_to_stream (list a): stream a 
-//end
-
 fun           list_show$sep (): void
 fun {a:t@ype} list_show$elm (a): void
 fun {a:t@ype} list_show (list a): void
+
+end (* LOCAL *)
 
 fun list_selftest (): void 
 

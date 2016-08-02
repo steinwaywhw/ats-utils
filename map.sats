@@ -3,6 +3,8 @@ staload "./maybe.sats"
 	
 abstype map (k:t@ype, v:t@ype) = ptr
 
+fun {k:t@ype} {v:t@ype} map_make (): map (k, v)
+
 fun {k:t@ype} {v:t@ype} map_insert (map (k, v), k, v, (k, k) -> int) : map (k, v)
 fun {k:t@ype} {v:t@ype} map_member (map (k, v), k, (k, k) -> int)    : bool
 fun {k:t@ype} {v:t@ype} map_lookup (map (k, v), k, (k, k) -> int)    : maybe (v)

@@ -9,6 +9,8 @@ staload _ = "./maybe.dats"
 
 assume map (k, v) = avltree (k, v)
 
+implement {k} {v} map_make () = avltree_make ()
+
 implement {k} {v} map_insert (map, key, value, cmp) = avltree_insert (map, key, value, cmp)
 implement {k} {v} map_member (map, key, cmp)        = avltree_member (map, key, cmp)
 implement {k} {v} map_lookup (map, key, cmp)        = avltree_lookup (map, key, cmp)

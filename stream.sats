@@ -39,26 +39,20 @@ fun {a,b:t@ype} stream_foldl    (stream a, b, (a, b) -<cloref1> b): b
 fun {a:t@ype}   stream_any      (stream a, a -<cloref1> bool): bool
 fun {a:t@ype}   stream_all      (stream a, a -<cloref1> bool): bool
 
-fun {a:t@ype}   stream_show$elm (a): void
 fun             stream_show$sep (): void
-fun {a:t@ype}   stream_show_len (stream a, nat): void
+fun {a:t@ype}   stream_show$elm (a): void
 fun {a:t@ype}   stream_show (stream a): void 
-
-//local 
-//staload "./list.sats"
-//in
-//fun {a:t@ype}   stream_to_list (stream a): list a 
-//fun {a:t@ype}   stream_from_list (list a): stream a
-//end
-
-fun stream_selftest (): void
+fun {a:t@ype}   stream_show_len (stream a, nat): void
 
 end (* LOCAL *)
 
+fun stream_selftest (): void
+
+overload [] 	  with stream_get
 overload eq       with stream_eq 
 overload =        with stream_eq 
-overload empty 	  with stream_empty	    
 overload len      with stream_len 
+overload empty 	  with stream_empty	    
 overload head 	  with stream_head	     
 overload tail 	  with stream_tail	     
 overload take 	  with stream_take	     
@@ -75,14 +69,7 @@ overload iforeach with stream_iforeach
 overload any      with stream_any 
 overload all      with stream_all     	
 
-overload [] 	  with stream_get
 overload show     with stream_show
 overload show     with stream_show_len
 
-
-
-////
-//fun {a:t@ype} stream_append (lazy (stream a), a): lazy (stream a)
-//fun {a:t@ype} stream_concat (lazy (stream a), lazy (stream a)): lazy (stream a)
-//overload append	 with stream_append      	
-//overload concat	 with stream_concat      	
+	

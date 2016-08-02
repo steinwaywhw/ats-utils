@@ -4,8 +4,12 @@ symintr gte
 symintr lt
 symintr lte
 symintr compare
+
 symintr empty
+symintr member 
 symintr len
+symintr height
+symintr size
 
 symintr append
 symintr prepend
@@ -26,10 +30,15 @@ symintr iforeach
 
 symintr any 
 symintr all
-symintr find
 
 symintr fst
 symintr snd
+
+symintr make
+symintr insert 
+symintr delete 
+symintr replace
+symintr find 
 
 symintr show
 

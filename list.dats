@@ -1,5 +1,5 @@
-#define ATS_DYNLOADFLAG 0
 #include "share/atspre_staload.hats"
+#define ATS_DYNLOADFLAG 0
 
 staload "libats/ML/SATS/string.sats"
 staload _ = "libats/ML/DATS/string.dats"
