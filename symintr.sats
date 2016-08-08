@@ -37,7 +37,7 @@ symintr snd
 symintr make
 symintr insert 
 symintr delete 
-symintr replace
+symintr update
 symintr find 
 
 symintr show
