@@ -6,18 +6,10 @@ datatype _stream (a:t@ype) =
 where stream (a:t@ype) = lazy (_stream a)
 
 
-local (* LOCAL *)
-
-typedef nat = [n:nat] int n
-
-in (* LOCAL *)
-
+typedef nat = intGte 0
 
 fun {a:t@ype}   stream_empty    (stream a): bool
 fun {a:t@ype}   stream_len      (stream a): nat
-
-fun {a:t@ype}   stream_eq$eq    (a, a): bool 
-fun {a:t@ype}   stream_eq       (stream a, stream a): bool 
 
 fun {a:t@ype}   stream_get      (stream a, nat): a
 fun {a:t@ype}   stream_head     (stream a): a
@@ -39,20 +31,13 @@ fun {a,b:t@ype} stream_foldl    (stream a, b, (a, b) -<cloref1> b): b
 fun {a:t@ype}   stream_any      (stream a, a -<cloref1> bool): bool
 fun {a:t@ype}   stream_all      (stream a, a -<cloref1> bool): bool
 
-fun             stream_show$sep (): void
-fun {a:t@ype}   stream_show$elm (a): void
-fun {a:t@ype}   stream_show (stream a): void 
-fun {a:t@ype}   stream_show_len (stream a, nat): void
-
-end (* LOCAL *)
-
 fun stream_selftest (): void
 
 overload [] 	  with stream_get
-overload eq       with stream_eq 
-overload =        with stream_eq 
+
 overload len      with stream_len 
 overload empty 	  with stream_empty	    
+
 overload head 	  with stream_head	     
 overload tail 	  with stream_tail	     
 overload take 	  with stream_take	     
@@ -69,7 +54,5 @@ overload iforeach with stream_iforeach
 overload any      with stream_any 
 overload all      with stream_all     	
 
-overload show     with stream_show
-overload show     with stream_show_len
 
 	

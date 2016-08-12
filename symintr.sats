@@ -1,12 +1,12 @@
 symintr eq
+symintr neq
 symintr gt
 symintr gte
 symintr lt
 symintr lte
-symintr compare
+symintr cmp
 
 symintr empty
-symintr member 
 symintr len
 symintr height
 symintr size
@@ -19,6 +19,7 @@ symintr tail
 symintr take
 symintr drop
 symintr reverse
+symintr find
 
 symintr map 
 symintr zip
@@ -28,6 +29,7 @@ symintr foldr
 symintr foreach
 symintr iforeach
 
+symintr member 
 symintr any 
 symintr all
 
@@ -42,10 +44,3 @@ symintr find
 
 symintr show
 
-overload show with print_bool
-overload show with print_string
-overload show with print_char
-overload show with print_int
-overload show with print_float
-overload show with print_double
-overload show with print_newline

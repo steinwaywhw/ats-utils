@@ -1,26 +1,20 @@
-#include "share/atspre_staload.hats"
 #define ATS_DYNLOADFLAG 0
+#include "share/atspre_staload.hats"
 
 staload "libc/SATS/math.sats"
 staload _ = "libc/DATS/math.dats"
 
-staload UN = "prelude/SATS/unsafe.sats"
-
 staload "./symintr.sats"
 staload "./string.sats"
-
 staload "./list.sats"
-staload _ = "./list.dats"
 staload "./maybe.sats"
+
+staload _ = "./list.dats"
 staload _ = "./maybe.dats"
 
-local 
 
 #define ::  ListCons
 #define nil ListNil
-typedef nat = [n:nat] int n 
-
-in 
 
 implement string_unexplode (xs) = let
 	val length = len (xs) + 1
@@ -28,12 +22,12 @@ implement string_unexplode (xs) = let
 
 	fun loop (xs: list char, p: ptr): void = 
 		case+ xs of
-		| x :: xs => loop (xs, ptr_succ<char>(p)) where { val _ = $UN.ptr0_set<char>(p, x) }
-		| nil () => $UN.ptr0_set<char>(p, $UN.cast{char}(0))
+		| x :: xs => loop (xs, ptr_succ<char>(p)) where { val _ = $UNSAFE.ptr0_set<char>(p, x) }
+		| nil () => $UNSAFE.ptr0_set<char>(p, $UNSAFE.cast{char}(0))
 
 	val _ = loop (xs, ptr)
 in 
-	$UN.castvwtp0{string}((view, gc | ptr))
+	$UNSAFE.castvwtp0{string}((view, gc | ptr))
 end
 
 implement string_explode (str) = let 
@@ -134,8 +128,8 @@ implement string_range (s, b, e) =
 	then string_unexplode (take (drop (string_explode s, b), e - b))
 	else ""
 
-implement string_compare (a, b) = $extfcall (int, "strcmp", a, b)
-implement string_eq (a, b) = string_compare (a, b) = 0
+//implement string_compare (a, b) = $extfcall (int, "strcmp", a, b)
+//implement string_eq (a, b) = string_compare (a, b) = 0
 implement string_len (str) = $extfcall (nat, "strlen", str)
 
 implement string_head (str) = if empty str then '\0' else str[0]
@@ -160,12 +154,16 @@ end
 
 implement string_find (str, sub) = let 
 	val result = $extfcall(int, "_string_find", str, sub)
-	staload UN = "prelude/SATS/unsafe.sats"
 in 
 	if result < 0
 	then Nothing ()
-	else Just ($UN.cast{nat} result)
+	else Just ($UNSAFE.cast{nat} result)
 end
+
+implement string_contains (str, sub) = 
+	case+ string_find (str, sub) of 
+	| Nothing _ => false
+	| Just _ => true
 
 %{
 
@@ -187,7 +185,7 @@ int _string_find (char *str, char *sep) {
 
 %}
 
-end
+
 
 ////
 

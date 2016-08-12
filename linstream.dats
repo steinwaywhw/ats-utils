@@ -1,10 +1,6 @@
-#include "share/atspre_staload.hats"
 #define ATS_DYNLOADFLAG 0
+#include "share/atspre_staload.hats"
 
-staload "libats/ML/SATS/string.sats"
-staload _ = "libats/ML/DATS/string.dats"
-
-staload "./symintr.sats"
 staload "./linstream.sats"
 staload "./stream.sats"
 
@@ -16,11 +12,8 @@ exception LinStreamException of string
 implement {a} linstream_free (xs)  = lazy_vt_free xs
 implement {a} linstream_force (xs) = lazy_vt_force xs
 
-implement {a} linstream_free_elm$default (x) = let 
-	staload UN = "prelude/SATS/unsafe.sats"
-in 
-	$UN.cast2void x 
-end 
+implement {a} linstream_free_elm$default (x) = 
+	$UNSAFE.cast2void x 
 
 implement (a:t@ype) linstream_free_elm<a> (x) = linstream_free_elm$default<a> x
 
@@ -31,12 +24,12 @@ implement {a} linstream_empty (xs) =
 
 implement {a} linstream_head (xs) = 
 	case+ !xs of 
-	| ~(nil _)   => (xs := $ldelay (nil ()); $raise LinStreamException ("stream is empty: " + $mylocation))
+	| ~(nil _)   => (xs := $ldelay (nil ()); $raise LinStreamException ($mylocation))
 	| ~(x :: ys) => (xs := ys; x)
 
 implement {a} linstream_tail (xs) = 
 	case+ !xs of 
-	| ~(nil _)   => $raise LinStreamException ("stream is empty: " + $mylocation)
+	| ~(nil _)   => $raise LinStreamException ($mylocation)
 	| ~(x :: xs) => let val () = linstream_free_elm x in xs end
 
 implement {a} linstream_take (xs, n) = let 
@@ -46,7 +39,7 @@ implement {a} linstream_take (xs, n) = let
 		then LinStreamNil ()
 		else 
 			case+ !xs of 
-			| ~(nil _)   => let val () = xs := $ldelay (nil ()) in $raise LinStreamException ("stream is too short: " + $mylocation) end 
+			| ~(nil _)   => let val () = xs := $ldelay (nil ()) in $raise LinStreamException ($mylocation) end 
 			| ~(x :: ys) => let val () = xs := ys in x :: $ldelay (loop (xs, n-1)) end 
 in 
 	$ldelay (loop (xs, n))
@@ -58,7 +51,7 @@ implement {a} linstream_drop (xs, n) =
 	else 
 		case+ !xs of 
 		| ~(x :: xs) => let val () = linstream_free_elm x in linstream_drop (xs, n-1) end 
-		| ~(nil _)   => $raise LinStreamException ("stream is too short: " + $mylocation)
+		| ~(nil _)   => $raise LinStreamException ($mylocation)
 
 implement {a} linstream_foreach (xs, f) = let 
 	val _ = linstream_foldl<a,int> (xs, 0, lam (x, n) => (f x; 0))
@@ -67,7 +60,6 @@ in
 end
 
 implement {a} linstream_iforeach (xs, f) = let 
-	typedef nat = [n:nat] int n
 	val _ = linstream_foldl<a,nat> (xs, 0, lam (x, n) => (f (x, n); n+1))
 in 
 	() 
@@ -165,18 +157,16 @@ in
 	$ldelay (loop (xs, f), ~xs)
 end
 
-implement {a} linstream_to_stream (xs) = let 
-	staload UN = "prelude/SATS/unsafe.sats"
-in 
+implement {a} linstream_to_stream (xs) = 
 	case+ !xs of 
 	| ~(nil _)   => $delay StreamNil ()
 	| ~(x :: xs) => 
 		let 
-			val xs = $UN.castvwtp0{ptr} xs
+			val xs = $UNSAFE.castvwtp0{ptr} xs
 		in 
-			$delay StreamCons (x, linstream_to_stream ($UN.castvwtp0{linstream a} xs))
+			$delay StreamCons (x, linstream_to_stream ($UNSAFE.castvwtp0{linstream a} xs))
 		end
-end
+
 
 
 

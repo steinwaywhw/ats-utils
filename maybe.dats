@@ -1,66 +1,70 @@
 #define ATS_DYNLOADFLAG 0
 #include "share/atspre_staload.hats"
 
-staload "./symintr.sats"
 staload "./maybe.sats"
+
+(******************************)
+
+staload "./order.sats"
+staload _ = "./order.dats"
+
+implement (a) order_compare<maybe a> (x, y) = 
+	case+ (x, y) of 
+	| (Nothing _, Nothing _) => 0
+	| (Just x, Just y) => order_compare<a> (x, y)
+	| (Nothing _, _) => ~1
+	| (_, Nothing _) => 1
+
+(******************************)
+
+staload "./show.sats"
+staload _ = "./show.dats"
+
+implement (a) show_any<maybe a> (m) = 
+	case+ m of 
+	| Nothing _ => show_any<string> "Nothing"
+	| Just x 	=> (show_any<string> "Just ("; show_any<a> x; show_any<string> ")")
+
+(******************************)
 
 implement {a,b} maybe_bind (m, f) = 
 	case+ m of 
 	| Nothing _ => Nothing ()
 	| Just (x)  => Just (f x)
 
-implement {a} maybe_show$elm (x) = 
-	gprint_val<a> x
+(******************************)
 
-implement {a} maybe_show (m) = 
-	case+ m of 
-	| Nothing _ => show "Nothing"
-	| Just x 	=> (show "Just ("; maybe_show$elm<a> x; show ")")
-
-implement {a} maybe_eq$eq (x, y) = 
-	gcompare_val_val<a> (x, y) = 0
-
-implement {a} maybe_eq (x, y) = 
-	case+ (x, y) of 
-	| (Just x, Just y) => maybe_eq$eq<a> (x, y)
-	| (Nothing _, Nothing _) => true
-	| (_, _) => false
-
-
-local 
-	(* such specific template definition has to be AFTER a generic one *)
-	typedef nat = [n:nat] int n 
-in 
-	implement maybe_show$elm<nat> (x) = let 
-		extern castfn to_int {a:t@ype} (a): int 
-	in 
-		maybe_show$elm<int> (to_int{nat} x)
-	end
-end
-
+////
 
 implement maybe_selftest () = () where {
-	val x = Nothing ()
-	val _ = show<char> x
+
+//	overload show with show<maybe int>
+	val p = show_any<maybe string>
+
+//	val x = Nothing{int} ()
+//	val _ = show x
 
 	val _ = show ()
 
+//	val _ = show "sss"
 	val x = Just("hahaha")
-	val _ = show<string> x
+	val _ = p x
 
-	val _ = show ()
+//	val _ = show ()
 
-	val x = Just (123)
-	val _ = show<int> x
+//	val x = Just (123)
+//	val _ = show x
 
-	val _ = show () 
+//	val _ = show () 
 
-	val x = maybe_bind (x, lam x => "after bind")
-	val _ = show<string> x
+//	val _ = show "aaa"
+
+//	val x = maybe_bind (x, lam x => "after bind")
+//	val _ = show x
 
 
-	val _ = assertloc (Nothing{int} () = Nothing{int} ())
-	val _ = assertloc (Just 3 \maybe_eq<int> Just 3)
-	val _ = assertloc (Just "aaa" \maybe_eq<string> Just "aaa")
+//	val _ = assertloc (Nothing{int} () \eq<maybe int> Nothing{int} ())
+//	val _ = assertloc (Just 3 \eq<maybe int> Just 3)
+//	val _ = assertloc (Just "aaa" \eq<maybe string> Just "aaa")
 
 }

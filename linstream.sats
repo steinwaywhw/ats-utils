@@ -6,11 +6,7 @@ datavtype _linstream (a:vt@ype+) =
 | LinStreamNil  (a) of () 
 where linstream (a:vt@ype) = lazy_vt (_linstream a)
 
-local 
-
-typedef nat = [n:nat] int n
-
-in 
+typedef nat = intGte 0
 
 fun {a:vt@ype}   linstream_force     (linstream a): _linstream a
  
@@ -34,13 +30,6 @@ fun {a,b:vt@ype} linstream_foldr     (linstream a, b, (&a, b) -<cloref1> b): b
 fun {a:vt@ype}   linstream_filter    (linstream a, (&a) -<cloref1> bool): linstream a
 
 fun {a:t@ype}    linstream_to_stream (linstream a): stream a 
-
-//fun              linstream_show$sep  (): void
-//fun {a:vt@ype}   linstream_show$elm  (&a): void 
-//fun {a:vt@ype}   linstream_show      (linstream a): void 
-//fun {a:vt@ype}   linstream_show_len  (&linstream a >> _, nat): void
-
-end 
 
 fun linstream_selftest (): void
 
