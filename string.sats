@@ -38,6 +38,8 @@ fun string_tail       (string): string
    
 fun string_trim       (string): string 
 
+fun string_selftest   (): void
+
 
 overload []      with string_get
 

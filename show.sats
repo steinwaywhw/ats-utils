@@ -2,7 +2,7 @@ staload "symintr.sats"
 
 fun {a:t@ype} show_addr (a): void 
 
-fun {a:t@ype} show_any (a): void
+fun {a:t@ype} show_any (INV(a)): void
 
 fun {}        show_begin (): void 
 fun {}        show_sep (): void

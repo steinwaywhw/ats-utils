@@ -3,9 +3,12 @@
 # PATSOLVE=$(PATSHOME)/bin/patsolve_smt
 # RMF=rm -f
 
-AR=ar
-PATSOPT=patsopt
-CC=gcc -DATS_MEMALLOC_LIBC -I$(PATSHOME) -I$(PATSHOME)/ccomp/runtime
+AR=ar -rcs
+PATSOPT=patsopt 
+CC=gcc -DATS_MEMALLOC_LIBC -I$(PATSHOME) -I$(PATSHOME)/ccomp/runtime -g
+# CCFLAGS=-fPIC 
+CCFLAGS=
+PATSCC=patscc -DATS_MEMALLOC_LIBC -L$(PWD) -latsutils -g
 RMF=rm -rf
 
 # all:: intset
@@ -31,7 +34,7 @@ RMF=rm -rf
 # 	$(PATSOPT) -tc --constraint-export -d $< | $(PATSOLVE) -i | tee ./test | z3 -smt2 -in
 
 
-all: atsutil.a
+all: libatsutils.a
 
 %_sats.c: %.sats 
 	$(PATSOPT) -o $@ -s $^
@@ -40,7 +43,7 @@ all: atsutil.a
 	$(PATSOPT) -o $@ -d $^
 
 %.o: %.c 
-	$(CC) -c $^ -o $@
+	$(CC) $(CCFLAGS) -c $^ -o $@
 
 
 list_dats.c: list.dats 
@@ -76,9 +79,15 @@ show_dats.o: show_dats.c
 unit_dats.c: unit.dats 
 unit_dats.o: unit_dats.c
 
-
-atsutil.a: list_dats.o maybe_dats.o stream_dats.o set_dats.o map_dats.o avl_dats.o linstream_dats.o string_dats.o order_dats.o show_dats.o unit_dats.o
-	$(AR) rcs $@ $<
+# libatsutils.a: maybe_dats.o order_dats.o show_dats.o
+libatsutils.a: list_dats.o maybe_dats.o stream_dats.o set_dats.o map_dats.o avl_dats.o linstream_dats.o string_dats.o order_dats.o show_dats.o unit_dats.o
+	$(AR) $@ $^
 
 clean: 
 	$(RMF) *ats.c *.o
+
+cleanall:
+	$(RMF) *ats.c *.o *.a *.out *.out.dSYM
+
+test: libatsutils.a testall.dats 
+	$(PATSCC) testall.dats 

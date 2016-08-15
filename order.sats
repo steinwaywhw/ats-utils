@@ -1,17 +1,17 @@
 staload "symintr.sats"
 
 
-fun {a:t@ype} order_compare (a, a): int 
+fun {a:t@ype} order_compare (INV(a), a): int 
 
-fun {a:t@ype} order_eq (a, a): bool 
-fun {a:t@ype} order_neq (a, a): bool 
-fun {a:t@ype} order_gt (a, a): bool
-fun {a:t@ype} order_lt (a, a): bool 
-fun {a:t@ype} order_gte (a, a): bool 
-fun {a:t@ype} order_lte (a, a): bool
+fun {a:t@ype} order_eq (INV(a), a): bool 
+fun {a:t@ype} order_neq (INV(a), a): bool 
+fun {a:t@ype} order_gt (INV(a), a): bool
+fun {a:t@ype} order_lt (INV(a), a): bool 
+fun {a:t@ype} order_gte (INV(a), a): bool 
+fun {a:t@ype} order_lte (INV(a), a): bool
 
-fun {a:t@ype} order_min (a, a): a 
-fun {a:t@ype} order_max (a, a): a
+fun {a:t@ype} order_min (INV(a), a): a 
+fun {a:t@ype} order_max (INV(a), a): a
 
 overload cmp  with order_compare
 overload eq   with order_eq

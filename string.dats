@@ -31,13 +31,15 @@ in
 end
 
 implement string_explode (str) = let 
-	val len = $extfcall (nat, "strlen", str)
+	val len = string_len str
 	fun loop (index: nat, ret: list (char)): list (char) =
 		if index >= len
 		then ret 
 		else loop (index + 1, str[index] :: ret)
+
+	val ret = loop (0, nil ())
 in 
-	list_reverse (loop (0, nil ()))
+	list_reverse ret
 end
 
 implement string_empty (s) = s = ""
@@ -130,7 +132,7 @@ implement string_range (s, b, e) =
 
 //implement string_compare (a, b) = $extfcall (int, "strcmp", a, b)
 //implement string_eq (a, b) = string_compare (a, b) = 0
-implement string_len (str) = $extfcall (nat, "strlen", str)
+implement string_len (str) = $UNSAFE.cast{nat} ($extfcall (int, "strlen", str))
 
 implement string_head (str) = if empty str then '\0' else str[0]
 implement string_tail (str) = if empty str then "" else string_range (str, 1, string_len str)
@@ -153,11 +155,11 @@ in
 end 
 
 implement string_find (str, sub) = let 
-	val result = $extfcall(int, "_string_find", str, sub)
+	val result = $extfcall(nat, "_string_find", str, sub)
 in 
 	if result < 0
-	then Nothing ()
-	else Just ($UNSAFE.cast{nat} result)
+	then Nothing{nat} ()
+	else Just{nat} (result)
 end
 
 implement string_contains (str, sub) = 
@@ -187,48 +189,6 @@ int _string_find (char *str, char *sep) {
 
 
 
+
 ////
 
-
-implement main0 () = () where {
-	val sep = "\n----------------\n" : string
-	val _ = show (string_from_char('C'))
-	val _ = show sep
-	val _ = show (string_from_int(~12345222))
-	val _ = show sep
-	val _ = show (string_to_int(" -1234562222 "))
-	val _ = show sep 
-	val _ = show (string_to_double("  -123.456 \n") = ~123.456)
-	val _ = show sep
-	val _ = show (string_explode "Abcdefg")
-	val _ = show sep
-	val _ = show (string_unexplode (string_explode "Abcdefg") = "Abcdefg")
-	val _ = show sep
-	val _ = show (string_find ("abcdefgsssasdsssa", "sss"))
-	val _ = show sep 
-	val _ = show (string_concat("abcde", "12345"))
-	val _ = show sep
-	val _ = show (string_join ("aaa" :: "bbb" :: "ccc" :: nil(), "XX"))
-	val _ = show sep
-	val _ = foreach (string_split ("aaaXXXbbbXXcccXXX", "XX"), lam x => show x where { val _ = print_newline ()})
-	val _ = show sep 
-	val _ = show (string_append ("abc", 'C'))
-	val _ = show sep 
-	val _ = show (string_prepend ("abc", 'C'))
-	val _ = show sep 
-	val _ = show (string_range ("abcde", 1, 4))
-	val _ = show sep 
-	val _ = show (string_range ("abcde", ~1, 9))
-	val _ = show sep 
-	val _ = show (string_range ("abcde", 2, 1))
-	val _ = show sep 
-	val _ = show (compare ("abcde", "abcde"))
-	val _ = show sep 
-	val _ = show (compare ("abc", "ABC"))
-	val _ = show sep 
-	val _ = show (eq ("ab", "ab"))
-	val _ = show sep 
-//	val _ = show 
-//	val _ = show 
-
-}
