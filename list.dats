@@ -32,8 +32,8 @@ staload _ = "./show.dats"
 implement (a) show_any<list a> (xs) = 
 	case+ xs of 
 	| nil ()      => ()
-	| x :: nil () => gprint_val<a> x
-	| x :: xs     => (gprint_val<a> x; show_sep<> (); show_any xs)
+	| x :: nil () => ignoret (show_any<a> x)
+	| x :: xs     => ignoret (show_any<a> x; show_sep<> (); show_any xs)
 
 (******************************)
 
