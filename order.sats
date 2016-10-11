@@ -2,6 +2,7 @@ staload "symintr.sats"
 
 
 fun {a:t@ype} order_compare (INV(a), INV(a)): int 
+fun {a:t@ype} order_compare_addr (INV(a), INV(a)): int 
 
 fun {a:t@ype} order_eq (INV(a), INV(a)): bool 
 fun {a:t@ype} order_neq (INV(a), INV(a)): bool 

@@ -8,9 +8,8 @@ typedef nat = intGte 0
 
 implement {a} show_any (x) = gprint_val<a> x
 
-implement gprint_val<nat> (x) = gprint_int ($UNSAFE.cast{int} x)
-//implement (n:int) show_any<string1 n> (x) = gprint_val<string> (g0ofg1 x)
-//implement (n:int) gprint_val<string1 n> (x) = gprint_val<string> (g0ofg1 x)
+implement show_any<nat> (x) = gprint_int ($UNSAFE.cast{int} x)
+implement (n:int) show_any<string1 n> (x) = gprint_val<string> (g0ofg1 x)
 
 
 implement {a} show_addr (x) = $extfcall (void, "printf", "%p", $UNSAFE.cast{ptr} x)

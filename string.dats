@@ -1,8 +1,8 @@
 #define ATS_DYNLOADFLAG 0
 #include "share/atspre_staload.hats"
 
-staload "libc/SATS/math.sats"
-staload _ = "libc/DATS/math.dats"
+staload "libats/libc/SATS/math.sats"
+staload _ = "libats/libc/DATS/math.dats"
 
 staload "./symintr.sats"
 staload "./string.sats"

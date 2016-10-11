@@ -206,7 +206,7 @@ implement {a} avltree_find (tree, k) = let
 		| cons (current, left, right) => 
 			if cmp (k, current) < 0 then _find left
 			else if cmp (k, current) > 0 then _find right
-			else Just k
+			else Just current
 in 
 	_find tree
 end 
