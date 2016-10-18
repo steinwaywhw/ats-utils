@@ -41,7 +41,7 @@ all: libatsutils.a
 %.o: %.c 
 	$(CC) $(CCFLAGS) -c $^ -o $@
 
-libatsutils.a: list_dats.o maybe_dats.o stream_dats.o set_dats.o map_dats.o avl_dats.o linstream_dats.o string_dats.o order_dats.o show_dats.o unit_dats.o
+libatsutils.a: list_dats.o maybe_dats.o stream_dats.o set_dats.o map_dats.o avl_dats.o linstream_dats.o string_dats.o order_dats.o show_dats.o unit_dats.o assoclist_dats.o
 	$(AR) $@ $^
 
 clean: 
